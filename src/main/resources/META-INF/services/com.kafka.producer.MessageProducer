@@ -1,0 +1,2 @@
+simple=com.kafka.producer.impl.SimpleMessageProducer
+keyed=com.kafka.producer.impl.KeyedMessageProducer

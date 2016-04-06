@@ -1,0 +1,1 @@
+producer=com.kafka.factory.ProducerFactory

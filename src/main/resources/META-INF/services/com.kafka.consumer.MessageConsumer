@@ -1,0 +1,2 @@
+topic=com.kafka.consumer.impl.TopicMessageConsumer
+queue=com.kafka.consumer.impl.QueueMessageConsumer

@@ -1,0 +1,2 @@
+producer=com.kafka.init.producer.ProducerPropertyBuilder
+consumer=com.kafka.init.consumer.ConsumerPropertyBuilder
