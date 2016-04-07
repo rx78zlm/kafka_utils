@@ -20,6 +20,6 @@ public class TestMain {
             }
         };
         messageConsumer.bindMessageHandler(handler);
-        messageConsumer.receive("test");
+        messageConsumer.receive("demo");
     }
 }

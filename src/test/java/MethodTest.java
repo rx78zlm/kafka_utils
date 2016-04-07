@@ -5,6 +5,7 @@ import com.kafka.init.PropertyBuilder;
 import com.kafka.init.producer.ProducerPropertyBuilder;
 import com.kafka.utils.NetUtils;
 import com.kafka.utils.ServiceBeanLoader;
+import kafka.admin.TopicCommand;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -145,5 +146,11 @@ public class MethodTest {
         properties1.setProperty("a", "222");
         System.out.println("properties:" + properties.get("a"));
         System.out.println("properties1:" + properties1.get("a"));
+    }
+
+    @Test
+    public void testTopicCommand() {
+        String cmd[] = {"--create", "--zookeeper", "localhost:2181", "--replication-factor", "2", "--partitions", "4", "--topic", "demo"};
+        TopicCommand.main(cmd);
     }
 }

@@ -1,5 +1,7 @@
 1.简单使用方式：
+
 创建消息生产者：
+
 ServiceBeanLoader<MessageProducer> loader = ServiceBeanLoader.getServiceBeanLoader(MessageProducer.class);
 MessageProducer<String> messageProducer = loader.getExtService("simple");
 messageProducer.sendMessage("topicName", "message");

@@ -5,11 +5,9 @@ import com.kafka.constants.ConsumerPropDesc;
 import com.kafka.consumer.MessageConsumer;
 import com.kafka.consumer.MessageHandler;
 import com.kafka.init.PropertyBuilder;
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
+import kafka.consumer.*;
 import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.message.MessageAndMetadata;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -81,9 +79,7 @@ public abstract class AbstractMessageConsumer<V> implements MessageConsumer<V> {
             log.warn("get thread count for topic error, use default value 1!");
             threadCount = 1;
         }
-        topicCountMap.put(topicName, threadCount);
-        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = connector.createMessageStreams(topicCountMap);
-        List<KafkaStream<byte[], byte[]>> streams = consumerMap.get(topicName);
+        List<KafkaStream<byte[], byte[]>> streams = connector.createMessageStreamsByFilter(new Whitelist(topicName), threadCount);
 
         // 创建topic对应的线程池
         ExecutorService executor = executorServiceConcurrentMap.get(topicName);
@@ -99,9 +95,11 @@ public abstract class AbstractMessageConsumer<V> implements MessageConsumer<V> {
                 public void run() {
                     ConsumerIterator<byte[], byte[]> it = stream.iterator();
                     while (it.hasNext()) {
-                        String message = new String(it.next().message());
-                        System.out.println(String.format("Message from thread %d, message is %s", threadNum, message));
-                        log.info("Message from thread {}, topic is {} message is {}", threadNum, topicName, message);
+                        MessageAndMetadata<byte[], byte[]> metadata = it.next();
+                        String message = new String(metadata.message());
+                        String topic = metadata.topic();
+                        System.out.println(String.format("Message from thread %d, topic is %s, message is %s, partitions is %d", threadNum, topic, message, metadata.partition()));
+                        log.info("Message from thread {}, topic is {}, partitions is {}, message is {}", threadNum, topicName, metadata.partition(), message);
                         @SuppressWarnings("unchecked")
                         V msg = (V) message;
                         messageHandler.processMessage(msg);
